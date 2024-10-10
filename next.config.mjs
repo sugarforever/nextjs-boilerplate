@@ -6,19 +6,7 @@ const nextConfig = {
     NEXTAUTH_URL: process.env.NEXTAUTH_URL,
     NEXTAUTH_SECRET: process.env.NEXTAUTH_SECRET,
     DATABASE_URL: process.env.DATABASE_URL,
-  },
-  images: {
-    remotePatterns: [
-      {
-        protocol: 'https',
-        hostname: '*.aliyuncs.com',
-      },
-      {
-        protocol: 'https',
-        hostname: 'replicate.delivery',
-      }
-    ],
-  },
+  }
 };
 
 export default nextConfig;
