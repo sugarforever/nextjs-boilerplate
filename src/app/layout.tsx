@@ -1,6 +1,5 @@
 import localFont from "next/font/local";
 import "./globals.css";
-import AuthProvider from "../components/AuthProvider";
 import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
 import { Analytics } from "@vercel/analytics/react"
@@ -17,6 +16,11 @@ const geistMono = localFont({
   weight: "100 900",
 });
 
+export const metadata = {
+  title: 'Next.js Boilerplate',
+  description: 'A modern Next.js boilerplate with authentication and admin console',
+};
+
 export default function RootLayout({
   children,
 }: Readonly<{
@@ -24,18 +28,14 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en">
-      <AuthProvider>
-        <body
-          className={`${geistSans.variable} ${geistMono.variable} antialiased`}
-        >
-          <Navbar />
-          <main className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
-            {children}
-          </main>
-          <Footer />
-          <Analytics />
-        </body>
-      </AuthProvider>
+      <body
+        className={`${geistSans.variable} ${geistMono.variable} antialiased`}
+      >
+        <Navbar />
+        {children}
+        <Footer />
+        <Analytics />
+      </body>
     </html>
   );
 }
