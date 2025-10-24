@@ -23,12 +23,22 @@ export default function Home() {
           </p>
           <div className="flex gap-4 justify-center">
             {session ? (
-              <Button size="lg" asChild>
-                <Link href="/dashboard">
-                  Go to Dashboard
-                  <ArrowRight className="ml-2 h-4 w-4" />
-                </Link>
-              </Button>
+              <>
+                {session.user?.role === 'ADMIN' ? (
+                  <Button size="lg" asChild>
+                    <Link href="/admin">
+                      Go to Admin Console
+                      <ArrowRight className="ml-2 h-4 w-4" />
+                    </Link>
+                  </Button>
+                ) : (
+                  <Button size="lg" variant="outline" asChild>
+                    <Link href="/">
+                      Welcome, {session.user?.name}
+                    </Link>
+                  </Button>
+                )}
+              </>
             ) : (
               <>
                 <Button size="lg" asChild>

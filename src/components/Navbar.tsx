@@ -11,7 +11,7 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger
 } from "@/components/ui/dropdown-menu";
-import { LogOut, Settings, Shield } from "lucide-react";
+import { LogOut, Shield } from "lucide-react";
 
 export default function Navbar() {
   const { data: session } = useSession();
@@ -42,22 +42,17 @@ export default function Navbar() {
                     </Avatar>
                   </DropdownMenuTrigger>
                   <DropdownMenuContent align="end" className="w-56">
-                    <DropdownMenuItem>
-                      <Settings className="mr-2 h-4 w-4" />
-                      Settings
-                    </DropdownMenuItem>
                     {session.user?.role === 'ADMIN' && (
                       <>
-                        <DropdownMenuSeparator />
                         <DropdownMenuItem asChild>
                           <Link href="/admin">
                             <Shield className="mr-2 h-4 w-4" />
                             Admin Console
                           </Link>
                         </DropdownMenuItem>
+                        <DropdownMenuSeparator />
                       </>
                     )}
-                    <DropdownMenuSeparator />
                     <DropdownMenuItem onClick={() => signOut()}>
                       <LogOut className="mr-2 h-4 w-4" />
                       Sign out
