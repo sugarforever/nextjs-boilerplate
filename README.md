@@ -6,7 +6,7 @@ A modern, production-ready Next.js boilerplate with authentication, role-based a
 
 - **Next.js 14** - App Router, Server Components, and modern React features
 - **TypeScript** - Type-safe development experience
-- **Better Auth** - Secure email/password authentication
+- **Better Auth** - Secure email/password and Google OAuth authentication
 - **Prisma** - Type-safe database ORM with PostgreSQL
 - **Role-Based Access Control** - USER and ADMIN roles with protected routes
 - **Admin Console** - Complete admin panel with:
@@ -62,6 +62,10 @@ BETTER_AUTH_SECRET=your-secret-key-here
 
 # App URL
 NEXT_PUBLIC_APP_URL=http://localhost:3000
+
+# Google OAuth (optional, but recommended)
+GOOGLE_CLIENT_ID=your-google-client-id
+GOOGLE_CLIENT_SECRET=your-google-client-secret
 ```
 
 To generate a secure secret for `BETTER_AUTH_SECRET`:
@@ -69,6 +73,8 @@ To generate a secure secret for `BETTER_AUTH_SECRET`:
 ```bash
 openssl rand -base64 32
 ```
+
+**Note:** Google OAuth credentials are optional. If not provided, the application will work with email/password authentication only.
 
 ### 3. Database Setup
 
@@ -78,13 +84,60 @@ Run Prisma migrations to create database tables:
 npx prisma migrate dev
 ```
 
-### 4. Run Development Server
+### 4. Google OAuth Setup (Optional)
+
+To enable Google OAuth authentication:
+
+1. **Create a Google Cloud Project:**
+   - Go to [Google Cloud Console](https://console.cloud.google.com/)
+   - Create a new project or select an existing one
+
+2. **Enable Google+ API:**
+   - Navigate to "APIs & Services" > "Library"
+   - Search for "Google+ API" and enable it
+
+3. **Configure OAuth Consent Screen:**
+   - Go to "APIs & Services" > "OAuth consent screen"
+   - Choose "External" user type (unless you're using Google Workspace)
+   - Fill in the required information:
+     - App name
+     - User support email
+     - Developer contact email
+   - Click "Save and Continue" through the scopes screen
+   - Add test users if your app is in testing mode
+
+4. **Create OAuth Credentials:**
+   - Go to "APIs & Services" > "Credentials"
+   - Click "Create Credentials" > "OAuth client ID"
+   - Choose "Web application" as the application type
+   - Add authorized redirect URIs:
+     - `http://localhost:3000/api/auth/callback/google` (for development)
+     - `https://yourdomain.com/api/auth/callback/google` (for production)
+   - Click "Create"
+   - Copy the **Client ID** and **Client Secret**
+
+5. **Add Credentials to `.env`:**
+   ```env
+   GOOGLE_CLIENT_ID=your-client-id-here.apps.googleusercontent.com
+   GOOGLE_CLIENT_SECRET=your-client-secret-here
+   ```
+
+6. **Restart your development server:**
+   ```bash
+   npm run dev
+   ```
+
+Now users can sign in or sign up using their Google accounts!
+
+### 5. Run Development Server
 
 ```bash
 npm run dev
 ```
 
 Open [http://localhost:3000](http://localhost:3000) to see your application.
+
+**Note:** If you've configured Google OAuth, you'll see a "Sign in with Google" button on the sign-in and sign-up pages.
 
 ## Project Structure
 
@@ -195,6 +248,8 @@ npx prisma migrate dev --name your_migration_name
    - `DATABASE_URL`
    - `BETTER_AUTH_SECRET`
    - `NEXT_PUBLIC_APP_URL`
+   - `GOOGLE_CLIENT_ID` (optional)
+   - `GOOGLE_CLIENT_SECRET` (optional)
 4. Deploy!
 
 ### Database on Vercel

@@ -1,6 +1,19 @@
 import { betterAuth } from "better-auth";
 import { prismaAdapter } from "better-auth/adapters/prisma";
+import { google } from "better-auth/plugins";
 import prisma from "./prisma";
+
+const plugins = [];
+
+// Add Google OAuth plugin if credentials are provided
+if (process.env.GOOGLE_CLIENT_ID && process.env.GOOGLE_CLIENT_SECRET) {
+  plugins.push(
+    google({
+      clientId: process.env.GOOGLE_CLIENT_ID,
+      clientSecret: process.env.GOOGLE_CLIENT_SECRET,
+    })
+  );
+}
 
 export const auth = betterAuth({
   database: prismaAdapter(prisma, {
@@ -10,6 +23,7 @@ export const auth = betterAuth({
     enabled: true,
     requireEmailVerification: false,
   },
+  ...(plugins.length > 0 && { plugins }),
   user: {
     additionalFields: {
       role: {
