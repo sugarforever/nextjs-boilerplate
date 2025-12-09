@@ -2,6 +2,7 @@
 
 import { useSession, signOut } from "@/lib/auth-client";
 import Link from "next/link";
+import { usePathname } from "next/navigation";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Button } from "@/components/ui/button";
 import {
@@ -15,6 +16,12 @@ import { LogOut, Shield } from "lucide-react";
 
 export default function Navbar() {
   const { data: session } = useSession();
+  const pathname = usePathname();
+
+  // Hide navbar on chat page (it has its own layout)
+  if (pathname === '/chat') {
+    return null;
+  }
 
   return (
     <nav className="bg-background border-b">

@@ -4,7 +4,7 @@ import Link from 'next/link';
 import { useSession } from '@/lib/auth-client';
 import { Button } from '@/components/ui/button';
 import { Card } from '@/components/ui/card';
-import { ArrowRight, Zap, Shield, Users } from 'lucide-react';
+import { ArrowRight, Zap, Shield, Users, Sparkles } from 'lucide-react';
 
 export default function Home() {
   const { data: session } = useSession();
@@ -21,34 +21,31 @@ export default function Home() {
             A modern Next.js boilerplate with authentication, role-based access control,
             and admin console. Everything you need to start your next project.
           </p>
-          <div className="flex gap-4 justify-center">
+          <div className="flex gap-4 justify-center flex-wrap">
+            <Button size="lg" asChild>
+              <Link href="/chat">
+                <Sparkles className="mr-2 h-4 w-4" />
+                Try AI Chat
+              </Link>
+            </Button>
             {session ? (
               <>
-                {session.user?.role === 'ADMIN' ? (
-                  <Button size="lg" asChild>
-                    <Link href="/admin">
-                      Go to Admin Console
-                      <ArrowRight className="ml-2 h-4 w-4" />
-                    </Link>
-                  </Button>
-                ) : (
+                {session.user?.role === 'ADMIN' && (
                   <Button size="lg" variant="outline" asChild>
-                    <Link href="/">
-                      Welcome, {session.user?.name}
+                    <Link href="/admin">
+                      Admin Console
+                      <ArrowRight className="ml-2 h-4 w-4" />
                     </Link>
                   </Button>
                 )}
               </>
             ) : (
               <>
-                <Button size="lg" asChild>
+                <Button size="lg" variant="outline" asChild>
                   <Link href="/sign-up">
                     Get Started
                     <ArrowRight className="ml-2 h-4 w-4" />
                   </Link>
-                </Button>
-                <Button size="lg" variant="outline" asChild>
-                  <Link href="/sign-in">Sign In</Link>
                 </Button>
               </>
             )}
@@ -60,7 +57,16 @@ export default function Home() {
       <section className="px-4 py-20 bg-muted/50">
         <div className="max-w-6xl mx-auto">
           <h2 className="text-3xl font-bold text-center mb-12">Features</h2>
-          <div className="grid md:grid-cols-3 gap-8">
+          <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-6">
+            <Card className="p-6 space-y-4">
+              <div className="h-12 w-12 bg-primary rounded-lg flex items-center justify-center">
+                <Sparkles className="h-6 w-6 text-primary-foreground" />
+              </div>
+              <h3 className="text-xl font-semibold">AI Chat</h3>
+              <p className="text-muted-foreground">
+                Built-in AI assistant powered by OpenAI with streaming responses and markdown support.
+              </p>
+            </Card>
             <Card className="p-6 space-y-4">
               <div className="h-12 w-12 bg-primary rounded-lg flex items-center justify-center">
                 <Zap className="h-6 w-6 text-primary-foreground" />
@@ -74,7 +80,7 @@ export default function Home() {
               <div className="h-12 w-12 bg-primary rounded-lg flex items-center justify-center">
                 <Shield className="h-6 w-6 text-primary-foreground" />
               </div>
-              <h3 className="text-xl font-semibold">Secure Authentication</h3>
+              <h3 className="text-xl font-semibold">Secure Auth</h3>
               <p className="text-muted-foreground">
                 Email/password authentication with better-auth and role-based access control.
               </p>
@@ -97,16 +103,24 @@ export default function Home() {
         <div className="max-w-4xl mx-auto text-center space-y-8">
           <h2 className="text-4xl font-bold">Ready to get started?</h2>
           <p className="text-xl text-muted-foreground">
-            Create your account today and start building your application.
+            Try our AI Chat or create an account to explore all features.
           </p>
-          {!session && (
+          <div className="flex gap-4 justify-center flex-wrap">
             <Button size="lg" asChild>
-              <Link href="/sign-up">
-                Create Account
-                <ArrowRight className="ml-2 h-4 w-4" />
+              <Link href="/chat">
+                <Sparkles className="mr-2 h-4 w-4" />
+                Try AI Chat
               </Link>
             </Button>
-          )}
+            {!session && (
+              <Button size="lg" variant="outline" asChild>
+                <Link href="/sign-up">
+                  Create Account
+                  <ArrowRight className="ml-2 h-4 w-4" />
+                </Link>
+              </Button>
+            )}
+          </div>
         </div>
       </section>
     </div>

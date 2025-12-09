@@ -1,9 +1,14 @@
 # Next.js Boilerplate
 
-A modern, production-ready Next.js boilerplate with authentication, role-based access control, and admin console.
+A modern, production-ready Next.js boilerplate with AI chat, authentication, role-based access control, and admin console.
 
 ## Features
 
+- **AI Chat** - Built-in AI assistant powered by OpenAI with:
+  - Streaming responses using Vercel AI SDK
+  - Markdown rendering with syntax highlighting
+  - Modern sidebar layout (ChatGPT-style)
+  - shadcn.io AI components
 - **Next.js 14** - App Router, Server Components, and modern React features
 - **TypeScript** - Type-safe development experience
 - **Better Auth** - Secure email/password authentication
@@ -19,14 +24,17 @@ A modern, production-ready Next.js boilerplate with authentication, role-based a
 
 ## Tech Stack
 
-- **Framework:** Next.js 14 (App Router)
-- **Language:** TypeScript
-- **Authentication:** Better Auth
-- **Database:** PostgreSQL with Prisma ORM
-- **Styling:** Tailwind CSS
-- **UI Components:** Radix UI + shadcn/ui
-- **Icons:** Lucide React
-- **Deployment:** Vercel-ready
+| Category | Technology |
+|----------|------------|
+| **Framework** | Next.js 14 (App Router) |
+| **Language** | TypeScript 5 |
+| **AI** | Vercel AI SDK, OpenAI GPT-4o-mini |
+| **Authentication** | Better Auth |
+| **Database** | PostgreSQL with Prisma ORM |
+| **Styling** | Tailwind CSS |
+| **UI Components** | Radix UI + shadcn/ui + shadcn.io AI |
+| **Icons** | Lucide React |
+| **Deployment** | Vercel-ready |
 
 ## Getting Started
 
@@ -34,6 +42,7 @@ A modern, production-ready Next.js boilerplate with authentication, role-based a
 
 - Node.js 18+ and npm
 - PostgreSQL database
+- OpenAI API key (for AI Chat)
 
 ### 1. Clone and Install
 
@@ -45,13 +54,13 @@ npm install
 
 ### 2. Environment Setup
 
-Create a `.env` file in the root directory:
+Create a `.env.local` file in the root directory:
 
 ```bash
-cp .env.example .env
+cp .env.example .env.local
 ```
 
-Update the following variables in `.env`:
+Update the following variables:
 
 ```env
 # Database connection string
@@ -62,6 +71,9 @@ BETTER_AUTH_SECRET=your-secret-key-here
 
 # App URL
 NEXT_PUBLIC_APP_URL=http://localhost:3000
+
+# OpenAI API Key (for AI Chat)
+OPENAI_API_KEY=sk-your-openai-api-key
 ```
 
 To generate a secure secret for `BETTER_AUTH_SECRET`:
@@ -95,28 +107,59 @@ src/
 │   │   ├── users/         # User management
 │   │   ├── layout.tsx     # Admin layout with sidebar
 │   │   └── page.tsx       # Admin dashboard
+│   ├── chat/              # AI Chat page
+│   │   ├── layout.tsx     # Chat layout (full-screen)
+│   │   └── page.tsx       # Chat interface with sidebar
 │   ├── sign-in/           # Sign in page
 │   ├── sign-up/           # Sign up page
 │   ├── api/               # API routes
-│   │   └── auth/          # Better Auth endpoints
+│   │   ├── auth/          # Better Auth endpoints
+│   │   └── chat/          # AI Chat streaming endpoint
 │   ├── layout.tsx         # Root layout
 │   └── page.tsx           # Homepage
 ├── components/            # React components
 │   ├── ui/               # shadcn/ui components
+│   │   └── shadcn-io/    # shadcn.io AI components
+│   │       └── ai/       # Conversation, Message, Response, etc.
 │   ├── AdminGuard.tsx    # Admin route protection
 │   ├── Navbar.tsx        # Navigation bar
 │   └── Footer.tsx        # Footer
 ├── lib/                   # Utilities and configurations
 │   ├── auth.ts           # Better Auth configuration
 │   ├── auth-client.ts    # Client-side auth helpers
-│   └── prisma.ts         # Prisma client
-└── middleware.ts          # Next.js middleware (removed, using client-side guards)
+│   ├── prisma.ts         # Prisma client
+│   └── utils.ts          # Utility functions
+└── middleware.ts          # Next.js middleware
 
 prisma/
 └── schema.prisma          # Database schema
 
 scripts/
 └── make-admin.ts          # Admin promotion script
+```
+
+## AI Chat
+
+The AI Chat feature provides a full-featured conversational interface:
+
+### Features
+- **Streaming responses** - Real-time text streaming from OpenAI
+- **Markdown support** - Rich text formatting with syntax highlighting
+- **Code blocks** - Syntax-highlighted code with copy functionality
+- **Sidebar layout** - Collapsible sidebar with chat history
+- **New chat** - Start fresh conversations
+- **Responsive design** - Works on desktop and mobile
+
+### Customization
+
+To change the AI model, edit `src/app/api/chat/route.ts`:
+
+```typescript
+const result = streamText({
+  model: openai('gpt-4o-mini'), // Change to 'gpt-4o', 'gpt-4-turbo', etc.
+  system: 'Your custom system prompt here',
+  messages: convertToModelMessages(messages),
+});
 ```
 
 ## User Roles
@@ -134,16 +177,12 @@ To promote a user to admin role, use the built-in npm script:
 npm run make-admin user@example.com
 ```
 
-This will:
-- Find the user by email
-- Update their role to ADMIN
-- Display confirmation with user details
-
 ## Routes
 
 ### Public Routes
 
 - `/` - Homepage
+- `/chat` - AI Chat interface
 - `/sign-in` - Sign in page
 - `/sign-up` - Sign up page
 
@@ -195,6 +234,7 @@ npx prisma migrate dev --name your_migration_name
    - `DATABASE_URL`
    - `BETTER_AUTH_SECRET`
    - `NEXT_PUBLIC_APP_URL`
+   - `OPENAI_API_KEY`
 4. Deploy!
 
 ### Database on Vercel
@@ -216,6 +256,14 @@ npx shadcn@latest add button
 npx shadcn@latest add card
 ```
 
+### Adding AI Components
+
+shadcn.io AI components are pre-installed. To add more:
+
+```bash
+npx shadcn@latest add https://www.shadcn.io/registry/ai.json
+```
+
 ### Modifying Authentication
 
 Edit `src/lib/auth.ts` to customize Better Auth configuration:
@@ -233,9 +281,11 @@ Edit `src/lib/auth.ts` to customize Better Auth configuration:
 ## Learn More
 
 - [Next.js Documentation](https://nextjs.org/docs)
+- [Vercel AI SDK Documentation](https://sdk.vercel.ai/docs)
 - [Better Auth Documentation](https://www.better-auth.com/)
 - [Prisma Documentation](https://www.prisma.io/docs)
 - [shadcn/ui Documentation](https://ui.shadcn.com/)
+- [shadcn.io AI Components](https://www.shadcn.io/ai)
 - [Tailwind CSS Documentation](https://tailwindcss.com/docs)
 
 ## License
