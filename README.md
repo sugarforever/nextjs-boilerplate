@@ -9,7 +9,7 @@ A modern, production-ready Next.js boilerplate with AI chat, authentication, rol
   - Markdown rendering with syntax highlighting
   - Modern sidebar layout (ChatGPT-style)
   - shadcn.io AI components
-- **Next.js 14** - App Router, Server Components, and modern React features
+- **Next.js 16** - App Router, Server Components, and modern React features
 - **TypeScript** - Type-safe development experience
 - **Better Auth** - Secure email/password authentication
 - **Prisma** - Type-safe database ORM with PostgreSQL
@@ -26,7 +26,7 @@ A modern, production-ready Next.js boilerplate with AI chat, authentication, rol
 
 | Category | Technology |
 |----------|------------|
-| **Framework** | Next.js 14 (App Router) |
+| **Framework** | Next.js 16 (App Router) |
 | **Language** | TypeScript 5 |
 | **AI** | Vercel AI SDK, OpenAI GPT-4o-mini |
 | **Authentication** | Better Auth |
