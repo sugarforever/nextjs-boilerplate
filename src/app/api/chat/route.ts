@@ -1,9 +1,17 @@
 import { openai } from '@ai-sdk/openai';
 import { streamText, UIMessage, convertToModelMessages } from 'ai';
+import { auth } from '@/lib/auth';
+import { headers } from 'next/headers';
 
 export const maxDuration = 30;
 
 export async function POST(req: Request) {
+  // Verify user is authenticated before allowing API access
+  const session = await auth.api.getSession({ headers: await headers() });
+  if (!session) {
+    return new Response('Unauthorized', { status: 401 });
+  }
+
   const { messages }: { messages: UIMessage[] } = await req.json();
 
   const result = streamText({
