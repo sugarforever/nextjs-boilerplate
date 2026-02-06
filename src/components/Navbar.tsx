@@ -13,70 +13,103 @@ import {
   DropdownMenuTrigger
 } from "@/components/ui/dropdown-menu";
 import { LogOut, Shield } from "lucide-react";
+import { isAuthEnabled, isChatEnabled } from "@/lib/features";
 
 export default function Navbar() {
   const { data: session } = useSession();
   const pathname = usePathname();
 
-  // Hide navbar on chat page (it has its own layout)
   if (pathname === '/chat') {
     return null;
   }
 
   return (
-    <nav className="bg-background border-b">
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div className="flex justify-between h-16">
-          <div className="flex items-center">
-            <Link href="/" className="text-xl font-semibold">
-              App
+    <nav className="border-b border-border">
+      <div className="mx-auto max-w-5xl px-6">
+        <div className="flex h-14 items-center justify-between">
+          <div className="flex items-center gap-8">
+            <Link
+              href="/"
+              className="text-sm font-semibold tracking-tight"
+            >
+              Boilerplate
             </Link>
-            <div className="ml-10 flex items-baseline space-x-6">
-              <Link href="/" className="text-sm text-muted-foreground hover:text-foreground transition-colors">
+            <div className="hidden sm:flex items-center gap-6">
+              <Link
+                href="/"
+                className={`text-sm transition-colors duration-200 ${
+                  pathname === '/'
+                    ? 'text-foreground'
+                    : 'text-muted-foreground hover:text-foreground'
+                }`}
+              >
                 Home
               </Link>
+              {isChatEnabled && (
+                <Link
+                  href="/chat"
+                  className={`text-sm transition-colors duration-200 ${
+                    pathname === '/chat'
+                      ? 'text-foreground'
+                      : 'text-muted-foreground hover:text-foreground'
+                  }`}
+                >
+                  Chat
+                </Link>
+              )}
             </div>
           </div>
-          <div className="flex items-center gap-4">
-            {session ? (
-              <>
-                <span className="text-sm text-muted-foreground">{session.user?.name}</span>
-                <DropdownMenu>
-                  <DropdownMenuTrigger className="focus:outline-none">
-                    <Avatar className="h-9 w-9">
-                      <AvatarImage src={session.user?.image || undefined} alt={session.user?.name || "User"} />
-                      <AvatarFallback>{session.user?.name?.[0] || "U"}</AvatarFallback>
-                    </Avatar>
-                  </DropdownMenuTrigger>
-                  <DropdownMenuContent align="end" className="w-56">
-                    {session.user?.role === 'ADMIN' && (
-                      <>
-                        <DropdownMenuItem asChild>
-                          <Link href="/admin">
-                            <Shield className="mr-2 h-4 w-4" />
-                            Admin Console
-                          </Link>
-                        </DropdownMenuItem>
-                        <DropdownMenuSeparator />
-                      </>
-                    )}
-                    <DropdownMenuItem onClick={() => signOut()}>
-                      <LogOut className="mr-2 h-4 w-4" />
-                      Sign out
-                    </DropdownMenuItem>
-                  </DropdownMenuContent>
-                </DropdownMenu>
-              </>
-            ) : (
-              <div className="flex gap-2">
-                <Button variant="ghost" size="sm" asChild>
+
+          <div className="flex items-center gap-3">
+            {isAuthEnabled && session ? (
+              <DropdownMenu>
+                <DropdownMenuTrigger className="focus:outline-none">
+                  <Avatar className="h-8 w-8">
+                    <AvatarImage
+                      src={session.user?.image || undefined}
+                      alt={session.user?.name || "User"}
+                    />
+                    <AvatarFallback className="text-xs">
+                      {session.user?.name?.[0] || "U"}
+                    </AvatarFallback>
+                  </Avatar>
+                </DropdownMenuTrigger>
+                <DropdownMenuContent align="end" className="w-48">
+                  <div className="px-2 py-1.5">
+                    <p className="text-sm font-medium">{session.user?.name}</p>
+                    <p className="text-xs text-muted-foreground">{session.user?.email}</p>
+                  </div>
+                  <DropdownMenuSeparator />
+                  {session.user?.role === 'ADMIN' && (
+                    <>
+                      <DropdownMenuItem asChild>
+                        <Link href="/admin" className="cursor-pointer">
+                          <Shield className="mr-2 h-3.5 w-3.5" />
+                          Admin
+                        </Link>
+                      </DropdownMenuItem>
+                      <DropdownMenuSeparator />
+                    </>
+                  )}
+                  <DropdownMenuItem
+                    onClick={() => signOut()}
+                    className="cursor-pointer"
+                  >
+                    <LogOut className="mr-2 h-3.5 w-3.5" />
+                    Sign out
+                  </DropdownMenuItem>
+                </DropdownMenuContent>
+              </DropdownMenu>
+            ) : isAuthEnabled ? (
+              <div className="flex items-center gap-2">
+                <Button variant="ghost" size="sm" className="h-8 text-sm" asChild>
                   <Link href="/sign-in">Sign in</Link>
                 </Button>
-                <Button size="sm" asChild>
-                  <Link href="/sign-up">Sign up</Link>
+                <Button size="sm" className="h-8 text-sm" asChild>
+                  <Link href="/sign-up">Get started</Link>
                 </Button>
               </div>
-            )}
+            ) : null}
           </div>
         </div>
       </div>

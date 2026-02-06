@@ -6,10 +6,16 @@ import { headers } from 'next/headers';
 export const maxDuration = 30;
 
 export async function POST(req: Request) {
-  // Verify user is authenticated before allowing API access
-  const session = await auth.api.getSession({ headers: await headers() });
-  if (!session) {
-    return new Response('Unauthorized', { status: 401 });
+  if (process.env.NEXT_PUBLIC_ENABLE_AI_CHAT !== 'true') {
+    return new Response('Not Found', { status: 404 });
+  }
+
+  // Verify user is authenticated before allowing API access (if auth is available)
+  if (auth) {
+    const session = await auth.api.getSession({ headers: await headers() });
+    if (!session) {
+      return new Response('Unauthorized', { status: 401 });
+    }
   }
 
   const { messages }: { messages: UIMessage[] } = await req.json();

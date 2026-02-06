@@ -1,7 +1,12 @@
 import prisma from '@/lib/prisma';
 import { UserManagementTable } from './user-management-table';
+import { redirect } from 'next/navigation';
 
 export default async function UsersPage() {
+  if (!prisma) {
+    redirect('/');
+  }
+
   const users = await prisma.user.findMany({
     orderBy: { createdAt: 'desc' },
     select: {

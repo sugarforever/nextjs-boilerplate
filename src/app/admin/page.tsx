@@ -1,8 +1,13 @@
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Users, Shield } from 'lucide-react';
 import prisma from '@/lib/prisma';
+import { redirect } from 'next/navigation';
 
 export default async function AdminDashboard() {
+  if (!prisma) {
+    redirect('/');
+  }
+
   const totalUsers = await prisma.user.count();
   const adminUsers = await prisma.user.count({
     where: { role: 'ADMIN' },

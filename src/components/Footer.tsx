@@ -5,15 +5,16 @@ import { usePathname } from 'next/navigation';
 const Footer = () => {
   const pathname = usePathname();
 
-  // Hide footer on chat page
   if (pathname === '/chat') {
     return null;
   }
 
   return (
-    <footer className="bg-white text-black py-4">
-      <div className="container mx-auto flex justify-center items-center">
-        <p className="text-sm">&copy; {new Date().getFullYear()}</p>
+    <footer className="border-t border-border">
+      <div className="mx-auto max-w-5xl px-6 py-6">
+        <p className="text-xs text-muted-foreground">
+          &copy; {new Date().getFullYear()}
+        </p>
       </div>
     </footer>
   );

@@ -3,126 +3,102 @@
 import Link from 'next/link';
 import { useSession } from '@/lib/auth-client';
 import { Button } from '@/components/ui/button';
-import { Card } from '@/components/ui/card';
-import { ArrowRight, Zap, Shield, Users, Sparkles } from 'lucide-react';
+import { ArrowRight } from 'lucide-react';
+import { isAuthEnabled, isChatEnabled } from '@/lib/features';
 
 export default function Home() {
   const { data: session } = useSession();
 
   return (
-    <div className="flex min-h-[calc(100vh-4rem)] flex-col">
-      {/* Hero Section */}
-      <section className="flex-1 flex items-center justify-center px-4 py-20">
-        <div className="max-w-4xl mx-auto text-center space-y-8">
-          <h1 className="text-5xl md:text-6xl font-bold tracking-tight">
-            Build faster with our boilerplate
+    <div className="flex min-h-[calc(100vh-3.5rem)] flex-col">
+      {/* Hero */}
+      <section className="flex flex-1 items-center justify-center px-6">
+        <div className="mx-auto max-w-2xl text-center">
+          <h1 className="text-4xl font-bold tracking-tight sm:text-5xl">
+            Start building faster
           </h1>
-          <p className="text-xl text-muted-foreground max-w-2xl mx-auto">
-            A modern Next.js boilerplate with authentication, role-based access control,
-            and admin console. Everything you need to start your next project.
+          <p className="mt-4 text-lg text-muted-foreground">
+            A minimal Next.js boilerplate with the essentials.
+            Authentication, admin panel, and AI chat — all optional.
           </p>
-          <div className="flex gap-4 justify-center flex-wrap">
-            <Button size="lg" asChild>
-              <Link href="/chat">
-                <Sparkles className="mr-2 h-4 w-4" />
-                Try AI Chat
-              </Link>
-            </Button>
-            {session ? (
-              <>
-                {session.user?.role === 'ADMIN' && (
-                  <Button size="lg" variant="outline" asChild>
-                    <Link href="/admin">
-                      Admin Console
-                      <ArrowRight className="ml-2 h-4 w-4" />
-                    </Link>
-                  </Button>
-                )}
-              </>
-            ) : (
-              <>
-                <Button size="lg" variant="outline" asChild>
-                  <Link href="/sign-up">
-                    Get Started
-                    <ArrowRight className="ml-2 h-4 w-4" />
-                  </Link>
-                </Button>
-              </>
-            )}
-          </div>
-        </div>
-      </section>
-
-      {/* Features Section */}
-      <section className="px-4 py-20 bg-muted/50">
-        <div className="max-w-6xl mx-auto">
-          <h2 className="text-3xl font-bold text-center mb-12">Features</h2>
-          <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-6">
-            <Card className="p-6 space-y-4">
-              <div className="h-12 w-12 bg-primary rounded-lg flex items-center justify-center">
-                <Sparkles className="h-6 w-6 text-primary-foreground" />
-              </div>
-              <h3 className="text-xl font-semibold">AI Chat</h3>
-              <p className="text-muted-foreground">
-                Built-in AI assistant powered by OpenAI with streaming responses and markdown support.
-              </p>
-            </Card>
-            <Card className="p-6 space-y-4">
-              <div className="h-12 w-12 bg-primary rounded-lg flex items-center justify-center">
-                <Zap className="h-6 w-6 text-primary-foreground" />
-              </div>
-              <h3 className="text-xl font-semibold">Fast & Modern</h3>
-              <p className="text-muted-foreground">
-                Built with Next.js 14, React 18, and modern best practices for optimal performance.
-              </p>
-            </Card>
-            <Card className="p-6 space-y-4">
-              <div className="h-12 w-12 bg-primary rounded-lg flex items-center justify-center">
-                <Shield className="h-6 w-6 text-primary-foreground" />
-              </div>
-              <h3 className="text-xl font-semibold">Secure Auth</h3>
-              <p className="text-muted-foreground">
-                Email/password authentication with better-auth and role-based access control.
-              </p>
-            </Card>
-            <Card className="p-6 space-y-4">
-              <div className="h-12 w-12 bg-primary rounded-lg flex items-center justify-center">
-                <Users className="h-6 w-6 text-primary-foreground" />
-              </div>
-              <h3 className="text-xl font-semibold">Admin Console</h3>
-              <p className="text-muted-foreground">
-                Complete admin panel with user management and role assignment capabilities.
-              </p>
-            </Card>
-          </div>
-        </div>
-      </section>
-
-      {/* CTA Section */}
-      <section className="px-4 py-20">
-        <div className="max-w-4xl mx-auto text-center space-y-8">
-          <h2 className="text-4xl font-bold">Ready to get started?</h2>
-          <p className="text-xl text-muted-foreground">
-            Try our AI Chat or create an account to explore all features.
-          </p>
-          <div className="flex gap-4 justify-center flex-wrap">
-            <Button size="lg" asChild>
-              <Link href="/chat">
-                <Sparkles className="mr-2 h-4 w-4" />
-                Try AI Chat
-              </Link>
-            </Button>
-            {!session && (
-              <Button size="lg" variant="outline" asChild>
-                <Link href="/sign-up">
-                  Create Account
+          <div className="mt-8 flex items-center justify-center gap-3">
+            {isChatEnabled && (
+              <Button asChild>
+                <Link href="/chat">
+                  Try AI Chat
                   <ArrowRight className="ml-2 h-4 w-4" />
                 </Link>
+              </Button>
+            )}
+            {isAuthEnabled && !session && (
+              <Button variant={isChatEnabled ? 'outline' : 'default'} asChild>
+                <Link href="/sign-up">
+                  Get started
+                  <ArrowRight className="ml-2 h-4 w-4" />
+                </Link>
+              </Button>
+            )}
+            {isAuthEnabled && session?.user?.role === 'ADMIN' && (
+              <Button variant="outline" asChild>
+                <Link href="/admin">Admin Console</Link>
               </Button>
             )}
           </div>
         </div>
       </section>
+
+      {/* Features */}
+      <section className="border-t border-border px-6 py-20">
+        <div className="mx-auto max-w-5xl">
+          <div className="grid gap-px overflow-hidden rounded-lg border border-border sm:grid-cols-2 lg:grid-cols-3">
+            <FeatureCell
+              title="Next.js"
+              description="Built on the latest version with App Router and React Server Components."
+            />
+            {isAuthEnabled && (
+              <FeatureCell
+                title="Authentication"
+                description="Email/password auth with better-auth and role-based access control."
+              />
+            )}
+            {isAuthEnabled && (
+              <FeatureCell
+                title="Admin Panel"
+                description="User management dashboard with role assignment."
+              />
+            )}
+            {isChatEnabled && (
+              <FeatureCell
+                title="AI Chat"
+                description="OpenAI-powered assistant with streaming and markdown."
+              />
+            )}
+            <FeatureCell
+              title="Tailwind CSS"
+              description="Utility-first styling with shadcn/ui components."
+            />
+            <FeatureCell
+              title="TypeScript"
+              description="End-to-end type safety across the entire stack."
+            />
+          </div>
+        </div>
+      </section>
+    </div>
+  );
+}
+
+function FeatureCell({
+  title,
+  description,
+}: {
+  title: string;
+  description: string;
+}) {
+  return (
+    <div className="bg-background p-6 transition-colors duration-200 hover:bg-muted/50">
+      <h3 className="text-sm font-semibold">{title}</h3>
+      <p className="mt-1 text-sm text-muted-foreground">{description}</p>
     </div>
   );
 }
